@@ -42,6 +42,8 @@ let
     (pnpm_9.fetchDeps {
       inherit pname version src;
       hash = pnpmDepsHash;
+
+      fetcherVersion = 9;
     }).overrideAttrs
       (_: {
         preInstall = preConfigure;
