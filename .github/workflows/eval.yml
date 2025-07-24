@@ -18,6 +18,7 @@ jobs:
       src: ${{ steps.changes.outputs.src }}
       wranglerLatest: ${{ steps.changes.outputs.wranglerLatest }}
       wrangler3: ${{ steps.changes.outputs.wrangler3 }}
+      workerd: ${{ steps.changes.outputs.workerd }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -33,6 +34,9 @@ jobs:
               - 'pkgs/wrangler/4_x.nix'
             wrangler3:
               - 'pkgs/wrangler/3_x.nix'
+            workerd:
+              - 'pkgs/bazel_8/**'
+              - 'pkgs/workerd/**'
   nixExprs:
     name: Nix Exprs
     runs-on: ubuntu-latest
@@ -85,3 +89,10 @@ jobs:
     uses: ./.github/workflows/build-wrangler.yml
     with:
       wranglerPackage: wrangler_3
+  packagesWorkerd:
+    name: 'Packages (workerd)'
+    needs:
+      - changes
+      - nixExprs
+    if: ${{ needs.changes.outputs.workerd == 'true' }}
+    uses: ./.github/workflows/build-workerd.yml
