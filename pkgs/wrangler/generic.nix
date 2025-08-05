@@ -43,7 +43,7 @@ let
       inherit pname version src;
       hash = pnpmDepsHash;
 
-      fetcherVersion = 9;
+      fetcherVersion = 2;
     }).overrideAttrs
       (_: {
         preInstall = preConfigure;
@@ -81,27 +81,25 @@ stdenv.mkDerivation {
     meta
     ;
 
-  buildInputs =
-    [
-      llvmPackages.libcxx
-      llvmPackages.libunwind
-    ]
-    ++ lib.optionals (stdenv.hostPlatform.isLinux) [
-      musl
-      xorg.libX11
-    ];
+  buildInputs = [
+    llvmPackages.libcxx
+    llvmPackages.libunwind
+  ]
+  ++ lib.optionals (stdenv.hostPlatform.isLinux) [
+    musl
+    xorg.libX11
+  ];
 
-  nativeBuildInputs =
-    [
-      makeWrapper
-      nodejs
-      pnpm_9.configHook
-      jq
-      moreutils
-    ]
-    ++ lib.optionals (stdenv.hostPlatform.isLinux) [
-      autoPatchelfHook
-    ];
+  nativeBuildInputs = [
+    makeWrapper
+    nodejs
+    pnpm_9.configHook
+    jq
+    moreutils
+  ]
+  ++ lib.optionals (stdenv.hostPlatform.isLinux) [
+    autoPatchelfHook
+  ];
 
   # Credits to @ezrizhu
   postBuild = ''
