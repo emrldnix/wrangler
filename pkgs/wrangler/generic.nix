@@ -126,6 +126,9 @@ stdenv.mkDerivation {
     cp -r tools $out/lib/tools
     rm -rf node_modules/typescript node_modules/eslint node_modules/prettier node_modules/bin node_modules/.bin node_modules/**/bin node_modules/**/.bin
     rm -rf $out/lib/**/bin $out/lib/**/.bin
+
+    rm -rf $out/lib/packages/wrangler/node_modules/@cloudflare/jsrpc $out/lib/packages/miniflare/node_modules/@cloudflare/jsrpc
+
     NODE_PATH_ARRAY=( "$out/lib/node_modules" "$out/lib/packages/wrangler/node_modules" )
     makeWrapper ${lib.getExe nodejs} $out/bin/wrangler \
       --inherit-argv0 \
