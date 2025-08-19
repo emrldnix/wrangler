@@ -16,10 +16,10 @@ jobs:
           app-id: ${{ secrets.UPDATE_APP_ID }}
           private-key: ${{ secrets.UPDATE_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Nix
-        uses: "cachix/install-nix-action@v31"
+        uses: cachix/install-nix-action@v31
 
       - name: Update wrangler
         id: update
@@ -37,7 +37,7 @@ jobs:
           title: 'wrangler: ${{ steps.update.outputs.previous_version }} -> ${{ steps.update.outputs.new_version }}'
           body: |
             This PR updates the wrangler package to its latest version.
-            
+
             This update was performed automatically by the daily dependency update workflow.
           branch: update-wrangler_v4
           delete-branch: true
@@ -50,7 +50,7 @@ jobs:
         run: gh pr merge --rebase --auto "${{ steps.cpr.outputs.pull-request-number }}"
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-  
+
   update-wrangler-v3:
     runs-on: ubuntu-latest
     permissions: write-all
@@ -61,10 +61,10 @@ jobs:
           app-id: ${{ secrets.UPDATE_APP_ID }}
           private-key: ${{ secrets.UPDATE_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Nix
-        uses: "cachix/install-nix-action@v31"
+        uses: cachix/install-nix-action@v31
 
       - name: Update wrangler
         id: update
@@ -82,7 +82,7 @@ jobs:
           title: 'wrangler_3: ${{ steps.update.outputs.previous_version }} -> ${{ steps.update.outputs.new_version }}'
           body: |
             This PR updates the wrangler package to its latest version.
-            
+
             This update was performed automatically by the daily dependency update workflow.
           branch: update-wrangler_v3
           delete-branch: true
