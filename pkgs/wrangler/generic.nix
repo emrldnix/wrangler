@@ -1,6 +1,6 @@
 {
   version,
-  rev ? "refs/tags/wrangler@${version}",
+  tag ? "wrangler@${version}",
   hash,
   pnpmDepsHash,
 }:
@@ -37,7 +37,7 @@ let
   src = fetchFromGitHub {
     owner = "cloudflare";
     repo = "workers-sdk";
-    inherit rev hash;
+    inherit tag hash;
   };
 
   pnpmDeps =
