@@ -141,4 +141,9 @@ stdenv.mkDerivation {
 
     runHook postInstall
   '';
+
+  preFixup = ''
+    # fixupPhase spends a lot of time trying to strip text files, which is especially slow on Darwin
+    stripExclude+=("*.js" "*.ts" "*.map" "*.json" "*.md")
+  '';
 }
