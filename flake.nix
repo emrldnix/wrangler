@@ -28,12 +28,17 @@
             system,
             ...
           }:
+          let
+            inherit (pkgs) callPackage;
+          in
           rec {
             formatter = pkgs.nixfmt-rfc-style;
 
             packages = rec {
-              wrangler = pkgs.callPackage ./pkgs/wrangler/4_x.nix { };
-              wrangler_3 = pkgs.callPackage ./pkgs/wrangler/3_x.nix { };
+              wrangler = callPackage ./pkgs/wrangler/4_x.nix { };
+              wrangler_3 = callPackage ./pkgs/wrangler/3_x.nix { };
+
+              workerd = callPackage ./pkgs/workerd/package.nix { };
 
               default = wrangler;
             };
