@@ -127,8 +127,10 @@ stdenv.mkDerivation {
     cp -r node_modules $out/lib
     cp -r tools $out/lib/tools
 
-    # jsrpc is vendored from 4.31
-    ${lib.optionalString (lib.versionAtLeast majMinVersion "4.31") "cp -r vendor $out/lib"}
+    # jsrpc is vendored from 4.31-4.38
+    ${lib.optionalString (
+      (lib.versionAtLeast majMinVersion "4.31") && (lib.versionOlder majMinVersion "4.39")
+    ) "cp -r vendor $out/lib"}
 
     rm -rf node_modules/typescript node_modules/eslint node_modules/prettier node_modules/bin node_modules/.bin node_modules/**/bin node_modules/**/.bin
     rm -rf $out/lib/**/bin $out/lib/**/.bin
