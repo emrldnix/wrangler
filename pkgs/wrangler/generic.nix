@@ -51,6 +51,15 @@ let
         preInstall = preConfigure;
       });
 
+  extraDeps = [
+    "workers-shared"
+    "miniflare"
+    "wrangler"
+  ]
+  ++ lib.optionals versionAtLeastFour [
+    "unenv-preset"
+  ];
+
   meta = {
     description = "Command-line interface for all things Cloudflare Workers";
     homepage = "https://github.com/cloudflare/workers-sdk#readme";
@@ -106,9 +115,9 @@ stdenv.mkDerivation {
   # Credits to @ezrizhu
   postBuild = ''
     ${lib.optionalString versionAtLeastFour "mv packages/vitest-pool-workers packages/~vitest-pool-workers"}
-    NODE_ENV="production" pnpm --filter workers-shared run build
-    NODE_ENV="production" pnpm --filter miniflare run build
-    NODE_ENV="production" pnpm --filter wrangler run build
+    for pkg in ${toString extraDeps}; do
+      NODE_ENV="production" pnpm --filter "$pkg" run build
+    done
   '';
 
   # I'm sure this is suboptimal but it seems to work. Points:
