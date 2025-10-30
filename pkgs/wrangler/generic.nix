@@ -51,14 +51,16 @@ let
         preInstall = preConfigure;
       });
 
-  extraDeps = [
-    "workers-shared"
-    "miniflare"
-    "wrangler"
-  ]
-  ++ lib.optionals versionAtLeastFour [
-    "unenv-preset"
-  ];
+  extraDeps =
+    lib.optionals versionAtLeastFour [
+      "unenv-preset"
+      "workers-utils"
+    ]
+    ++ [
+      "workers-shared"
+      "miniflare"
+      "wrangler"
+    ];
 
   meta = {
     description = "Command-line interface for all things Cloudflare Workers";
