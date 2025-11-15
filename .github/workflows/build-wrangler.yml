@@ -31,6 +31,11 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           nix_path: nixpkgs=channel:nixpkgs-unstable
+      - uses: nix-community/cache-nix-action@v6
+        with:
+          primary-key: nix-${{ inputs.wranglerPackage }}-${{ matrix.name }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+          restore-prefixes-first-match: nix-${{ inputs.wranglerPackage }}-${{ matrix.name }}-
+          gc-max-store-size-linux: 2G
       - uses: cachix/cachix-action@v16
         env:
           cachixAuth: ${{ secrets.cachixToken }}
@@ -41,6 +46,8 @@ jobs:
           skipPush: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' }}
       - name: Build
         run: nix build -L .#packages.${{ matrix.name }}.${{ inputs.wranglerPackage }}
+        env:
+          NIX_PATH: nixpkgs=channel:nixpkgs-unstable
       - name: Version check
         run: ./result/bin/wrangler -v
 
