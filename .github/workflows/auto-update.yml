@@ -16,7 +16,7 @@ jobs:
           app-id: ${{ secrets.UPDATE_APP_ID }}
           private-key: ${{ secrets.UPDATE_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
@@ -61,7 +61,7 @@ jobs:
           app-id: ${{ secrets.UPDATE_APP_ID }}
           private-key: ${{ secrets.UPDATE_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
