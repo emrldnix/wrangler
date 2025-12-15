@@ -31,7 +31,7 @@ jobs:
       - name: Create Pull Request
         id: cpr
         if: steps.update.outputs.previous_version != steps.update.outputs.new_version
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: 'wrangler: ${{ steps.update.outputs.previous_version }} -> ${{ steps.update.outputs.new_version }}'
           title: 'wrangler: ${{ steps.update.outputs.previous_version }} -> ${{ steps.update.outputs.new_version }}'
@@ -76,7 +76,7 @@ jobs:
       - name: Create Pull Request
         id: cpr
         if: steps.update.outputs.previous_version != steps.update.outputs.new_version
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: 'wrangler_3: ${{ steps.update.outputs.previous_version }} -> ${{ steps.update.outputs.new_version }}'
           title: 'wrangler_3: ${{ steps.update.outputs.previous_version }} -> ${{ steps.update.outputs.new_version }}'
