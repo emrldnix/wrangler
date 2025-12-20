@@ -10,7 +10,9 @@
   stdenv,
   cacert,
   fetchFromGitHub,
+  fetchPnpmDeps,
   pnpm_9,
+  pnpmConfigHook,
   autoPatchelfHook,
   llvmPackages,
   musl,
@@ -41,12 +43,16 @@ let
   };
 
   pnpmDeps =
-    (pnpm_9.fetchDeps {
-      inherit pname version src;
-      hash = pnpmDepsHash;
+    (
+      (fetchPnpmDeps {
+        inherit pname version src;
+        hash = pnpmDepsHash;
 
-      fetcherVersion = 2;
-    }).overrideAttrs
+        fetcherVersion = 2;
+      }).override
+      { pnpm = pnpm_9; }
+    ) # Fix until PR #472669 arrives in nixpkgs
+    .overrideAttrs
       (_: {
         preInstall = preConfigure;
       });
@@ -106,7 +112,8 @@ stdenv.mkDerivation {
   nativeBuildInputs = [
     makeWrapper
     nodejs
-    pnpm_9.configHook
+    pnpm_9
+    pnpmConfigHook
     jq
     moreutils
   ]
