@@ -18,7 +18,7 @@ jobs:
 
       - uses: actions/checkout@v6
 
-      - uses: wimpysworld/nothing-but-nix@main
+      - uses: wimpysworld/nothing-but-nix@cd91c27edba264e3216bd608bc34d9dea8a173cc
         with:
           hatchet-protocol: rampage
 
@@ -67,7 +67,7 @@ jobs:
 
       - uses: actions/checkout@v6
 
-      - uses: wimpysworld/nothing-but-nix@main
+      - uses: wimpysworld/nothing-but-nix@cd91c27edba264e3216bd608bc34d9dea8a173cc
         with:
           hatchet-protocol: rampage
 

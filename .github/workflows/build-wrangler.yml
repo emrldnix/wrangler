@@ -28,7 +28,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
-      - uses: wimpysworld/nothing-but-nix@main
+      - uses: wimpysworld/nothing-but-nix@cd91c27edba264e3216bd608bc34d9dea8a173cc
         if: runner.os == 'Linux'
         with:
           hatchet-protocol: rampage
