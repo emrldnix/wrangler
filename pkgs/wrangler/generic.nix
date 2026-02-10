@@ -61,6 +61,7 @@ let
     lib.optionals versionAtLeastFour [
       "unenv-preset"
       "workers-utils"
+      "local-explorer-ui"
     ]
     ++ [
       "workers-shared"
