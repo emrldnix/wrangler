@@ -16,7 +16,7 @@
   autoPatchelfHook,
   llvmPackages,
   musl,
-  xorg,
+  libx11,
   makeWrapper,
   nodejs,
   jq,
@@ -107,7 +107,7 @@ stdenv.mkDerivation {
   ]
   ++ lib.optionals (stdenv.hostPlatform.isLinux) [
     musl
-    xorg.libX11
+    libx11
   ];
 
   nativeBuildInputs = [
