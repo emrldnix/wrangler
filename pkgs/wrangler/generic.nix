@@ -62,6 +62,7 @@ let
       "unenv-preset"
       "workers-utils"
       "local-explorer-ui"
+      "codemod"
     ]
     ++ [
       "workers-shared"
