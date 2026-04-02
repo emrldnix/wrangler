@@ -12,6 +12,7 @@
   fetchFromGitHub,
   fetchPnpmDeps,
   pnpm_9,
+  pnpm,
   pnpmConfigHook,
   autoPatchelfHook,
   llvmPackages,
@@ -33,6 +34,7 @@ let
   majMinVersion = lib.versions.majorMinor version;
 
   versionAtLeastFour = lib.versionAtLeast majorVersion "4";
+  versionThree = lib.versionOlder majorVersion "4";
 
   pname = "wrangler";
 
@@ -50,9 +52,8 @@ let
 
         fetcherVersion = 2;
       }).override
-      { pnpm = pnpm_9; }
-    ) # Fix until PR #472669 arrives in nixpkgs
-    .overrideAttrs
+      (lib.optionalAttrs versionThree { pnpm = pnpm_9; })
+    ).overrideAttrs
       (_: {
         preInstall = preConfigure;
       });
@@ -64,8 +65,10 @@ let
       "local-explorer-ui"
       "codemod"
     ]
-    ++ [
+    ++ lib.optionals versionThree [
       "workers-shared"
+    ]
+    ++ [
       "miniflare"
       "wrangler"
     ];
@@ -114,7 +117,7 @@ stdenv.mkDerivation {
   nativeBuildInputs = [
     makeWrapper
     nodejs
-    pnpm_9
+    (if versionThree then pnpm_9 else pnpm)
     pnpmConfigHook
     jq
     moreutils
