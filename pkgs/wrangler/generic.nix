@@ -64,6 +64,7 @@ let
       "workers-utils"
       "local-explorer-ui"
       "codemod"
+      "cli-shared-helpers"
     ]
     ++ lib.optionals versionThree [
       "workers-shared"
