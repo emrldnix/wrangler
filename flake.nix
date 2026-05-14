@@ -32,9 +32,10 @@
             formatter = pkgs.nixfmt-rfc-style;
 
             packages = rec {
-              wrangler = pkgs.callPackage ./pkgs/wrangler/4_x.nix { };
+              wrangler_4 = pkgs.callPackage ./pkgs/wrangler/4_x.nix { };
               wrangler_3 = pkgs.callPackage ./pkgs/wrangler/3_x.nix { };
 
+              wrangler = wrangler_4;
               default = wrangler;
             };
 

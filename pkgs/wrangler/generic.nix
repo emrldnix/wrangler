@@ -12,7 +12,7 @@
   fetchFromGitHub,
   fetchPnpmDeps,
   pnpm_9,
-  pnpm,
+  pnpm_10,
   pnpmConfigHook,
   autoPatchelfHook,
   llvmPackages,
@@ -45,15 +45,13 @@ let
   };
 
   pnpmDeps =
-    (
-      (fetchPnpmDeps {
-        inherit pname version src;
-        hash = pnpmDepsHash;
+    (fetchPnpmDeps {
+      inherit pname version src;
+      hash = pnpmDepsHash;
 
-        fetcherVersion = 2;
-      }).override
-      (lib.optionalAttrs versionThree { pnpm = pnpm_9; })
-    ).overrideAttrs
+      pnpm = if versionThree then pnpm_9 else pnpm_10;
+      fetcherVersion = 3;
+    }).overrideAttrs
       (_: {
         preInstall = preConfigure;
       });
@@ -118,7 +116,7 @@ stdenv.mkDerivation {
   nativeBuildInputs = [
     makeWrapper
     nodejs
-    (if versionThree then pnpm_9 else pnpm)
+    (if versionThree then pnpm_9 else pnpm_10)
     pnpmConfigHook
     jq
     moreutils
