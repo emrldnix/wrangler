@@ -69,6 +69,12 @@ let
     ]
     ++ [
       "miniflare"
+    ]
+    ++ lib.optionals versionAtLeastFour [
+      "deploy-helpers"
+      "workers-auth"
+    ]
+    ++ [
       "wrangler"
     ];
 
