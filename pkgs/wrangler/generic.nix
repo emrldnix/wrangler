@@ -19,7 +19,7 @@
   musl,
   libx11,
   makeWrapper,
-  nodejs,
+  nodejs-slim_latest,
   jq,
   moreutils,
 }:
@@ -49,8 +49,11 @@ let
       inherit pname version src;
       hash = pnpmDepsHash;
 
-      pnpm = if versionThree then pnpm_9 else pnpm_10;
-      fetcherVersion = 3;
+      pnpm = (if versionThree then pnpm_9 else pnpm_10).override {
+        nodejs-slim = nodejs-slim_latest;
+      };
+
+      fetcherVersion = 4;
     }).overrideAttrs
       (_: {
         preInstall = preConfigure;
@@ -73,6 +76,7 @@ let
     ++ lib.optionals versionAtLeastFour [
       "deploy-helpers"
       "workers-auth"
+      "config"
     ]
     ++ [
       "wrangler"
@@ -95,7 +99,7 @@ let
     # other systems where precompiled binaries are not provided, but most
     # commands are will still work everywhere.
     # Potential improvements: build workerd from source instead.
-    inherit (nodejs.meta) platforms;
+    inherit (nodejs-slim_latest.meta) platforms;
   };
 in
 stdenv.mkDerivation {
@@ -121,7 +125,7 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [
     makeWrapper
-    nodejs
+    nodejs-slim_latest
     (if versionThree then pnpm_9 else pnpm_10)
     pnpmConfigHook
     jq
@@ -163,7 +167,7 @@ stdenv.mkDerivation {
     rm -rf node_modules/typescript node_modules/eslint node_modules/prettier node_modules/bin node_modules/.bin node_modules/**/bin node_modules/**/.bin
     rm -rf $out/lib/**/bin $out/lib/**/.bin
     NODE_PATH_ARRAY=( "$out/lib/node_modules" "$out/lib/packages/wrangler/node_modules" )
-    makeWrapper ${lib.getExe nodejs} $out/bin/wrangler \
+    makeWrapper ${lib.getExe nodejs-slim_latest} $out/bin/wrangler \
       --inherit-argv0 \
       --prefix-each NODE_PATH : "$${NODE_PATH_ARRAY[@]}" \
       --add-flags $out/lib/packages/wrangler/bin/wrangler.js \
