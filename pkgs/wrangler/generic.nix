@@ -44,15 +44,23 @@ let
     inherit tag hash;
   };
 
+  # pnpm switched to using nodejs-slim in 26.11
+  # Waiting on backport PR: https://github.com/NixOS/nixpkgs/pull/530296
+  pnpmIdent = if lib.versionAtLeast lib.trivial.release "26.11" then "nodejs-slim" else "nodejs";
+
+  pnpm = (if versionThree then pnpm_9 else pnpm_10).override {
+    ${pnpmIdent} = nodejs-slim_latest;
+  };
+
   pnpmDeps =
     (fetchPnpmDeps {
-      inherit pname version src;
+      inherit
+        pname
+        version
+        src
+        pnpm
+        ;
       hash = pnpmDepsHash;
-
-      pnpm = (if versionThree then pnpm_9 else pnpm_10).override {
-        nodejs-slim = nodejs-slim_latest;
-      };
-
       fetcherVersion = 4;
     }).overrideAttrs
       (_: {
@@ -126,7 +134,7 @@ stdenv.mkDerivation {
   nativeBuildInputs = [
     makeWrapper
     nodejs-slim_latest
-    (if versionThree then pnpm_9 else pnpm_10)
+    pnpm
     pnpmConfigHook
     jq
     moreutils
