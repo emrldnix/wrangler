@@ -82,9 +82,9 @@ let
       "miniflare"
     ]
     ++ lib.optionals versionAtLeastFour [
+      "config"
       "deploy-helpers"
       "workers-auth"
-      "config"
     ]
     ++ [
       "wrangler"
