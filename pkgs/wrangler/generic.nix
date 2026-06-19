@@ -85,6 +85,7 @@ let
       "config"
       "deploy-helpers"
       "workers-auth"
+      "autoconfig"
     ]
     ++ [
       "wrangler"
