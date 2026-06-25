@@ -44,9 +44,7 @@ let
     inherit tag hash;
   };
 
-  # pnpm switched to using nodejs-slim in 26.11
-  # Waiting on backport PR: https://github.com/NixOS/nixpkgs/pull/530296
-  pnpmIdent = if lib.versionAtLeast lib.trivial.release "26.11" then "nodejs-slim" else "nodejs";
+  pnpmIdent = if lib.versionAtLeast lib.trivial.release "26.05" then "nodejs-slim" else "nodejs";
 
   pnpm = (if versionThree then pnpm_9 else pnpm_10).override {
     ${pnpmIdent} = nodejs-slim_latest;
