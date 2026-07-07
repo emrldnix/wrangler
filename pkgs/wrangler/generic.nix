@@ -31,7 +31,6 @@ let
   '';
 
   majorVersion = lib.versions.major version;
-  majMinVersion = lib.versions.majorMinor version;
 
   versionAtLeastFour = lib.versionAtLeast majorVersion "4";
   versionThree = lib.versionOlder majorVersion "4";
@@ -159,25 +158,14 @@ stdenv.mkDerivation {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/bin $out/lib $out/lib/packages/wrangler
-    ${lib.optionalString versionAtLeastFour "mv packages/~vitest-pool-workers packages/vitest-pool-workers"}
-    cp -r fixtures $out/lib
-    cp -r packages $out/lib
-    cp -r node_modules $out/lib
-    cp -r tools $out/lib/tools
+    mkdir -p $out/{bin,lib}
+    pnpm config set --location=project injectWorkspacePackages true
+    pnpm --filter=wrangler --prod deploy $out/lib
 
-    # jsrpc is vendored from 4.31-4.38
-    ${lib.optionalString (
-      (lib.versionAtLeast majMinVersion "4.31") && (lib.versionOlder majMinVersion "4.39")
-    ) "cp -r vendor $out/lib"}
-
-    rm -rf node_modules/typescript node_modules/eslint node_modules/prettier node_modules/bin node_modules/.bin node_modules/**/bin node_modules/**/.bin
-    rm -rf $out/lib/**/bin $out/lib/**/.bin
-    NODE_PATH_ARRAY=( "$out/lib/node_modules" "$out/lib/packages/wrangler/node_modules" )
     makeWrapper ${lib.getExe nodejs-slim_latest} $out/bin/wrangler \
       --inherit-argv0 \
-      --prefix-each NODE_PATH : "$${NODE_PATH_ARRAY[@]}" \
-      --add-flags $out/lib/packages/wrangler/bin/wrangler.js \
+      --set NODE_PATH $out/lib/node_modules \
+      --add-flags $out/lib/bin/wrangler.js \
       --set-default SSL_CERT_FILE "${cacert}/etc/ssl/certs/ca-bundle.crt" # https://github.com/cloudflare/workers-sdk/issues/3264
 
     runHook postInstall
