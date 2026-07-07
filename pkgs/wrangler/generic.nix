@@ -11,7 +11,6 @@
   cacert,
   fetchFromGitHub,
   fetchPnpmDeps,
-  pnpm_9,
   pnpm_10,
   pnpmConfigHook,
   autoPatchelfHook,
@@ -30,11 +29,6 @@ let
     jq 'del(.packageManager)' package.json | sponge package.json
   '';
 
-  majorVersion = lib.versions.major version;
-
-  versionAtLeastFour = lib.versionAtLeast majorVersion "4";
-  versionThree = lib.versionOlder majorVersion "4";
-
   pname = "wrangler";
 
   src = fetchFromGitHub {
@@ -43,10 +37,8 @@ let
     inherit tag hash;
   };
 
-  pnpmIdent = if lib.versionAtLeast lib.trivial.release "26.05" then "nodejs-slim" else "nodejs";
-
-  pnpm = (if versionThree then pnpm_9 else pnpm_10).override {
-    ${pnpmIdent} = nodejs-slim_latest;
+  pnpm = pnpm_10.override {
+    nodejs-slim = nodejs-slim_latest;
   };
 
   pnpmDeps =
@@ -64,29 +56,19 @@ let
         preInstall = preConfigure;
       });
 
-  extraDeps =
-    lib.optionals versionAtLeastFour [
-      "unenv-preset"
-      "workers-utils"
-      "local-explorer-ui"
-      "codemod"
-      "cli-shared-helpers"
-    ]
-    ++ lib.optionals versionThree [
-      "workers-shared"
-    ]
-    ++ [
-      "miniflare"
-    ]
-    ++ lib.optionals versionAtLeastFour [
-      "config"
-      "deploy-helpers"
-      "workers-auth"
-      "autoconfig"
-    ]
-    ++ [
-      "wrangler"
-    ];
+  extraDeps = [
+    "unenv-preset"
+    "workers-utils"
+    "local-explorer-ui"
+    "codemod"
+    "cli-shared-helpers"
+    "miniflare"
+    "config"
+    "deploy-helpers"
+    "workers-auth"
+    "autoconfig"
+    "wrangler"
+  ];
 
   meta = {
     description = "Command-line interface for all things Cloudflare Workers";
@@ -143,18 +125,12 @@ stdenv.mkDerivation {
 
   # Credits to @ezrizhu
   postBuild = ''
-    ${lib.optionalString versionAtLeastFour "mv packages/vitest-pool-workers packages/~vitest-pool-workers"}
+    mv packages/vitest-pool-workers packages/~vitest-pool-workers
     for pkg in ${toString extraDeps}; do
       NODE_ENV="production" pnpm --filter "$pkg" run build
     done
   '';
 
-  # I'm sure this is suboptimal but it seems to work. Points:
-  # - when build is run in the original repo, no specific executable seems to be generated; you run the resulting build with pnpm run start
-  # - this means we need to add a dedicated script - perhaps it is possible to create this from the workers-sdk dir, but I don't know how to do this
-  # - the build process builds a version of miniflare which is used by wrangler; for this reason, the miniflare package is copied also
-  # - pnpm stores all content in the top-level node_modules directory, but it is linked to from a node_modules directory inside wrangler
-  # - as they are linked via symlinks, the relative location of them on the filesystem should be maintained
   installPhase = ''
     runHook preInstall
 
