@@ -17,7 +17,6 @@ jobs:
       flake: ${{ steps.changes.outputs.flake }}
       src: ${{ steps.changes.outputs.src }}
       wranglerLatest: ${{ steps.changes.outputs.wranglerLatest }}
-      wrangler3: ${{ steps.changes.outputs.wrangler3 }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -39,8 +38,6 @@ jobs:
               - 'pkgs/wrangler/generic.nix'
             wranglerLatest:
               - 'pkgs/wrangler/4_x.nix'
-            wrangler3:
-              - 'pkgs/wrangler/3_x.nix'
   nixExprs:
     name: Nix Exprs
     runs-on: ubuntu-latest
@@ -84,12 +81,3 @@ jobs:
       wranglerPackage: wrangler
     secrets:
       cachixToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-  packagesWrangler3:
-    name: 'Packages (wrangler_3)'
-    needs:
-      - changes
-      - nixExprs
-    if: ${{ needs.changes.outputs.flake == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.wrangler3 == 'true' }}
-    uses: ./.github/workflows/build-wrangler.yml
-    with:
-      wranglerPackage: wrangler_3

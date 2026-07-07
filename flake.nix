@@ -10,30 +10,26 @@
   };
 
   outputs =
-    inputs@{ self, flake-parts, ... }:
+    inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } (
-      { lib, ... }:
+      { ... }:
       {
         systems = [
           "x86_64-linux"
           "aarch64-linux"
-          "x86_64-darwin"
           "aarch64-darwin"
         ];
 
         perSystem =
           {
-            self',
             pkgs,
-            system,
             ...
           }:
           rec {
-            formatter = pkgs.nixfmt-rfc-style;
+            formatter = pkgs.nixfmt;
 
             packages = rec {
               wrangler_4 = pkgs.callPackage ./pkgs/wrangler/4_x.nix { };
-              wrangler_3 = pkgs.callPackage ./pkgs/wrangler/3_x.nix { };
 
               wrangler = wrangler_4;
               default = wrangler;
@@ -42,7 +38,7 @@
             devShells = {
               default = pkgs.mkShell {
                 packages = [
-                  pkgs.nixfmt-rfc-style
+                  pkgs.nixfmt
                   pkgs.nodejs
                   pkgs.pnpm
                 ];

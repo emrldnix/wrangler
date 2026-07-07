@@ -21,8 +21,6 @@ jobs:
             os: ubuntu-24.04-arm
           - name: aarch64-darwin
             os: macos-latest
-          - name: x86_64-darwin
-            os: macos-15-intel
 
     name: 'Build'
     runs-on: ${{ matrix.os }}
