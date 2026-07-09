@@ -67,6 +67,7 @@ let
     "deploy-helpers"
     "workers-auth"
     "autoconfig"
+    "runtime-types"
     "wrangler"
   ];
 
