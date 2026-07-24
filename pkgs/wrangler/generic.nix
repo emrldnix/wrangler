@@ -68,6 +68,7 @@ let
     "workers-auth"
     "autoconfig"
     "runtime-types"
+    "remote-bindings"
     "wrangler"
   ];
 
