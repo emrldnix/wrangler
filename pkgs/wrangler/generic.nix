@@ -69,6 +69,8 @@ let
     "autoconfig"
     "runtime-types"
     "remote-bindings"
+    "build-output-utils"
+    "@cloudflare/pages-functions"
     "wrangler"
   ];
 
