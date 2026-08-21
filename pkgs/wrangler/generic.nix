@@ -66,6 +66,7 @@ let
     "miniflare"
     "deploy-helpers"
     "workers-auth"
+    "shared-ast-primitives"
     "autoconfig"
     "runtime-types"
     "remote-bindings"
@@ -127,9 +128,7 @@ stdenv.mkDerivation {
     autoPatchelfHook
   ];
 
-  # Credits to @ezrizhu
   postBuild = ''
-    mv packages/vitest-pool-workers packages/~vitest-pool-workers
     for pkg in ${toString extraDeps}; do
       NODE_ENV="production" pnpm --filter "$pkg" run build
     done
