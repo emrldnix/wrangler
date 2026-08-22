@@ -107,6 +107,10 @@ stdenv.mkDerivation {
     meta
     ;
 
+  env = lib.optionalAttrs stdenv.hostPlatform.isDarwin {
+    NODE_OPTIONS = "--max-old-space-size=8192";
+  };
+
   buildInputs = [
     llvmPackages.libcxx
     llvmPackages.libunwind
