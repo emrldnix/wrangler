@@ -18,7 +18,7 @@
   musl,
   libx11,
   makeWrapper,
-  nodejs-slim_latest,
+  nodejs,
   jq,
   moreutils,
 }:
@@ -37,9 +37,7 @@ let
     inherit tag hash;
   };
 
-  pnpm = pnpm_10.override {
-    nodejs-slim = nodejs-slim_latest;
-  };
+  pnpm = pnpm_10;
 
   pnpmDeps =
     (fetchPnpmDeps {
@@ -55,25 +53,6 @@ let
       (_: {
         preInstall = preConfigure;
       });
-
-  extraDeps = [
-    "unenv-preset"
-    "workers-utils"
-    "local-explorer-ui"
-    "codemod"
-    "cli-shared-helpers"
-    "config"
-    "miniflare"
-    "deploy-helpers"
-    "workers-auth"
-    "shared-ast-primitives"
-    "autoconfig"
-    "runtime-types"
-    "remote-bindings"
-    "build-output-utils"
-    "@cloudflare/pages-functions"
-    "wrangler"
-  ];
 
   meta = {
     description = "Command-line interface for all things Cloudflare Workers";
@@ -92,7 +71,7 @@ let
     # other systems where precompiled binaries are not provided, but most
     # commands are will still work everywhere.
     # Potential improvements: build workerd from source instead.
-    inherit (nodejs-slim_latest.meta) platforms;
+    inherit (nodejs.meta) platforms;
   };
 in
 stdenv.mkDerivation {
@@ -108,34 +87,32 @@ stdenv.mkDerivation {
     ;
 
   env = lib.optionalAttrs stdenv.hostPlatform.isDarwin {
-    NODE_OPTIONS = "--max-old-space-size=8192";
+    NODE_OPTIONS = "--max-old-space-size=4096";
   };
 
   buildInputs = [
     llvmPackages.libcxx
     llvmPackages.libunwind
   ]
-  ++ lib.optionals (stdenv.hostPlatform.isLinux) [
+  ++ lib.optionals stdenv.hostPlatform.isLinux [
     musl
     libx11
   ];
 
   nativeBuildInputs = [
     makeWrapper
-    nodejs-slim_latest
+    nodejs
     pnpm
     pnpmConfigHook
     jq
     moreutils
   ]
-  ++ lib.optionals (stdenv.hostPlatform.isLinux) [
+  ++ lib.optionals stdenv.hostPlatform.isLinux [
     autoPatchelfHook
   ];
 
   postBuild = ''
-    for pkg in ${toString extraDeps}; do
-      NODE_ENV="production" pnpm --filter "$pkg" run build
-    done
+    NODE_ENV="production" pnpm --filter wrangler... run build
   '';
 
   installPhase = ''
@@ -145,7 +122,7 @@ stdenv.mkDerivation {
     pnpm config set --location=project injectWorkspacePackages true
     pnpm --filter=wrangler --prod deploy $out/lib
 
-    makeWrapper ${lib.getExe nodejs-slim_latest} $out/bin/wrangler \
+    makeWrapper ${lib.getExe nodejs} $out/bin/wrangler \
       --inherit-argv0 \
       --set NODE_PATH $out/lib/node_modules \
       --add-flags $out/lib/bin/wrangler.js \
