@@ -59,7 +59,7 @@ let
     homepage = "https://github.com/cloudflare/workers-sdk#readme";
     license = with lib.licenses; [
       mit
-      apsl20
+      asl20
     ];
     maintainers = with lib.maintainers; [
       seanrmurphy
