@@ -33,14 +33,18 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           nix_path: nixpkgs=channel:nixpkgs-unstable
-      - uses: cachix/cachix-action@v17
-        env:
-          cachixAuth: ${{ secrets.cachixToken }}
-        if: ${{ env.cachixAuth }}
+      - name: Install packages
+        run: nix profile add --inputs-from . nixpkgs#niks3
+      - name: Get niks3 path
+        id: niks3
+        run: |
+          path=$(which niks3)
+          echo "store-path=$path" >> "$GITHUB_OUTPUT"
+      - uses: Mic92/niks3-action@v1
         with:
-          name: wrangler
-          authToken: '${{ secrets.cachixToken }}'
-          skipPush: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' }}
+          server-url: https://niks3.ryand.ca
+          skip-push: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' }}
+          niks3-bin: ${{ steps.niks3.outputs.store-path }}
       - name: Build
         run: nix build -L .#packages.${{ matrix.name }}.${{ inputs.wranglerPackage }}
       - name: Version check

@@ -1,6 +1,11 @@
 {
   description = "Wrangler, the CLI for Cloudflare Workers, packaged as a nix flake";
 
+  nixConfig = {
+    extra-substituters = [ "https://cache.ryand.ca" ];
+    extra-trusted-public-keys = [ "ryandcache:H6aJbZCm8sAoMXCB9XbLAJb/ZamM6AY5Ns/QYGimOek=" ];
+  };
+
   inputs.nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.zst";
 
   outputs =

@@ -16,15 +16,15 @@ as you would any other package...
 
 However, the release cadence of `wrangler` is high - typically releasing a new
 version every week - and it is not really possible for `nixpkgs` to keep up
-with this. Hence, the version of `wrangler` available in `nixpkgs` will usually 
+with this. Hence, the version of `wrangler` available in `nixpkgs` will usually
 be a little behind the latest version and if you're not using the `master` branch,
 it could potentially be significantly behind the latest version.
 
 We hope to provide an update to `wrangler` on the `nixpkgs` `master` branch
 approximately every month or so.
 
-If you want to use the most up to date version of `wrangler`, you can use this 
-flake which is updated more frequently - we will try to update this within a 
+If you want to use the most up to date version of `wrangler`, you can use this
+flake which is updated more frequently - we will try to update this within a
 few days of the latest `wrangler` release.
 
 ## Usage
@@ -44,7 +44,7 @@ Get the recent release of wrangler in your flake inputs:
 }
 ```
 
-A more specific example of how this can be used in a workers project is 
+A more specific example of how this can be used in a workers project is
 provided in [examples/hello-world](examples/hello-world).
 
 ### Using the NAR Cache
@@ -60,8 +60,8 @@ If you don't want to build the latest release of `wrangler` every time, you can 
 
   outputs = { self, wrangler }: {
     nix.settings = {
-      substituters = [ "https://wrangler.cachix.org" ];
-      trusted-public-keys = [ "wrangler.cachix.org-1:N/FIcG2qBQcolSpklb2IMDbsfjZKWg+ctxx0mSMXdSs=" ];
+      substituters = [ "https://cache.ryand.ca" ];
+      trusted-public-keys = [ "ryandcache:H6aJbZCm8sAoMXCB9XbLAJb/ZamM6AY5Ns/QYGimOek=" ];
     };
 
     # Use wrangler in your outputs

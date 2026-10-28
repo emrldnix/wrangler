@@ -77,6 +77,8 @@ jobs:
       - nixExprs
     if: ${{ needs.changes.outputs.flake == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.wranglerLatest == 'true' }}
     uses: ./.github/workflows/build-wrangler.yml
+    permissions:
+      id-token: write
     with:
       wranglerPackage: wrangler
     secrets:
