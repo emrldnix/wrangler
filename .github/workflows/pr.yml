@@ -10,6 +10,8 @@ jobs:
   eval:
     name: Eval
     uses: ./.github/workflows/eval.yml
+    permissions:
+      id-token: write
     secrets:
       CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
