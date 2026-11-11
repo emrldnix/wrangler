@@ -21,6 +21,9 @@
   nodejs,
   jq,
   moreutils,
+
+  python3,
+  libkrb5,
 }:
 let
   # pnpm packageManager version in workers-sdk root package.json may not match nixpkgs
@@ -90,15 +93,6 @@ stdenv.mkDerivation {
     NODE_OPTIONS = "--max-old-space-size=4096";
   };
 
-  buildInputs = [
-    llvmPackages.libcxx
-    llvmPackages.libunwind
-  ]
-  ++ lib.optionals stdenv.hostPlatform.isLinux [
-    musl
-    libx11
-  ];
-
   nativeBuildInputs = [
     makeWrapper
     nodejs
@@ -106,10 +100,13 @@ stdenv.mkDerivation {
     pnpmConfigHook
     jq
     moreutils
+    python3
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
     autoPatchelfHook
   ];
+
+  buildInputs = [ libkrb5 ];
 
   postBuild = ''
     NODE_ENV="production" pnpm --filter wrangler... run build
@@ -130,6 +127,15 @@ stdenv.mkDerivation {
 
     runHook postInstall
   '';
+
+  runtimeDependencies = [
+    (lib.getLib llvmPackages.libcxx)
+    (lib.getLib llvmPackages.libunwind)
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isLinux [
+    (lib.getLib musl)
+    (lib.getLib libx11)
+  ];
 
   preFixup = ''
     # fixupPhase spends a lot of time trying to strip text files, which is especially slow on Darwin
